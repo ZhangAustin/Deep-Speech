@@ -1,7 +1,7 @@
 # Deep Learning for Speech Recognition 
 
 
-*Dependencies: [Theano](https://github.com/Theano/Theano) and [keras](http://keras.io/)
+*Dependencies: [Theano](https://github.com/Theano/Theano) and [keras](http://keras.io/)*
 
 - Install [Theano](https://github.com/Theano/Theano)
 
@@ -17,7 +17,9 @@ sudo pip install keras
 
 ------------------
 
-## 1. Speech_IO supports read and write Feature files, Label files, Model files and Lattices
+## 1. Speech_IO:
+
+*supports read and write Feature files, Label files, Model files and Lattices*
 
 speech_io/ 
 
@@ -34,7 +36,8 @@ speech_io/
 
 ## 2. Model Examples: 
 
-DNN, CNN, LSTM, CLDNN, FFNN, Attention models
+
+*DNN, CNN, LSTM, CLDNN, FFNN, Attention models*
 
 
 
@@ -42,5 +45,5 @@ DNN, CNN, LSTM, CLDNN, FFNN, Attention models
 
 ## 3. Recipes on ASR tasks:
 
-
+*Switchboard, TIMIT*
 
