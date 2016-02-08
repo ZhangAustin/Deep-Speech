@@ -1,7 +1,10 @@
 # Deep Learning Tools for Speech Recognition 
 
-writting in Python and running on GPUs. This tool was developed with a focus on enabling fast experimentation. 
+writting in Python and running on GPUs. This tool was developed with a focus on enabling fast experimentation for Speech Recognition. 
 Being able to go from idea to result with the least possible delay is key to doing good research.
+
+
+Moved to https://bitbucket.org/AustinZhang/deep-speech as a private repo, please email me for access.
 
 
 *Dependencies: [Theano](https://github.com/Theano/Theano) and [keras](http://keras.io/)*
