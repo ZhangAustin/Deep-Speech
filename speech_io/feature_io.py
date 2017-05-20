@@ -6,6 +6,9 @@ Usage: from speech_io.feature_io import *
 
 OBS = readscp(r'\\vilfblgpu020\D\users\zhashi\BNFeat\scps\BNDNN_BN_1300hr.mfc.head.fakechunk')
 
+
+Author:         zhashi@microsoft.com
+Last update:    2015/12
 """
 
 from struct import unpack, pack
@@ -142,7 +145,7 @@ class HTKFeat_read(object):
 
 
 class HTKFeat_write(object):
-    "Write Sphinx-II format feature files"
+    "Write HTK format feature files"
 
     def __init__(self, filename=None,
                  veclen=13, sampPeriod=100000,
@@ -175,7 +178,7 @@ class HTKFeat_write(object):
                            self.sampSize,
                            self.paramKind))
 
-    def writevec(self, vec):
+    def writevec(self, vec):        
         if len(vec) != self.veclen:
             raise Exception("Vector length must be %d" % self.veclen)
         if self.swap:
@@ -185,6 +188,9 @@ class HTKFeat_write(object):
         self.filesize = self.filesize + self.veclen
 
     def writeall(self, arr):
+        # fix a spical case that arr only has 1 frame
+        if arr.ndim==1:
+            arr=[arr]
         for row in arr:
             self.writevec(row)
 
@@ -199,9 +205,17 @@ class HTKFeat_write(object):
 #     #frame_num, feat_dim = bnfea.shape
 #     return obs
 
+def write_one_mfc(filename, numpy_matrix):
+    if numpy_matrix.ndim==2:
+        frame_num, fea_dim = numpy_matrix.shape
+    if numpy_matrix.ndim==1:
+        fea_dim = numpy_matrix.shape[-1]
+
+    mfc = hopen(filename, 'wb', fea_dim)
+    mfc.writeall(numpy_matrix)
 
 def read_one_mfc(filename, startframe=0, endframe=0):
-    # """ read one mfcc file using htkmfc.py"""
+    # """ read one mfcc file using htkmfc.py"""        
     mfc = hopen(filename)  # <htkmfc.HTKFeat_read object at 0x6ffffae1e90>  \\fbl\NAS\INVES\ruizhao\DNN\sequential\smdr3train\chunk\archive.0
     if (startframe == endframe == 0):
         obs = mfc.getall()  # or getchunk(startframe, endframe)  or getall()
@@ -213,7 +227,7 @@ def read_one_mfc(filename, startframe=0, endframe=0):
     return obs
 
 
-def readscp(filename):
+def read_scp(filename):
     """Read scp files and the corresponding mfc files, Converted it to a dictionary"""
 
 
@@ -227,19 +241,20 @@ def readscp(filename):
         startframe = 0
         endframe = 0
         if line.find('#'): line = line[:line.find('#')]  # Get rid of comments.
-        line = line.split()[0]  # If the line is empty, who cares?
+        line = line.split()[0]  # If the line is empty, who cares?        
         if not line: continue
 
         if '=' in line:
             set_file_name, line = line.split('=')
             check_format = 1
         if '[' in line:
+
             line, rest = line.split('[')
             startframe = int(rest.split(',')[0])
             endframe = int(rest.split(',')[1].split(']')[0])
-
-        mfc_file = line  # <------------- be careful, hard code for TIMIT
-        # print "processing", mfc_file
+        
+        mfc_file = line  # <------------- be careful, hard code for TIMIT        
+        #print "processing", mfc_file
 
         # for os in comp.Win32_OperatingSystem():
         #    print float(os.FreePhysicalMemory)/1000, "KB of available memory"
@@ -255,7 +270,7 @@ def readscp(filename):
         if check_format:
             pure_name = set_file_name.split('.')[0]
         else:
-            pure_name = mfc_file.split('\\')[-1][:-4]
+            pure_name = mfc_file.split('\\')[-1].split('.')[0] #.split('\\')[-1][:-4]            
         # print "O_purename:", pure_name
 
         # Create and utterance dictionary to filter the MLF loading
@@ -265,7 +280,6 @@ def readscp(filename):
 
     return o_utt, utt_dict
 
-    # OLD format
     # key = Mobile_SMD_en-US_Live_R3/44340/44340/45940
     # o_utt[key]=[[  3.84167051e+00   2.94051337e+00   4.03393555e+00 ...,   3.89492586e-02
                  #   4.45630476e-02  -4.89231683e-02]
