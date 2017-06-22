@@ -131,7 +131,7 @@ class HTKFeat_read(object):
         return data
 
     def getchunk(self, startframe,
-                 endframe):  # zhashi: support for chunkread   # XXX\chunk\archive.0[296,735]
+                 endframe):  # zhashi: support for chunkread   # \\fbl\NAS\INVES\ruizhao\DNN\sequential\smdr3train\chunk\archive.0[296,735]
         self.seek(startframe)
         data = numpy.fromfile(self.fh, self.dtype, (endframe - startframe + 1) * self.veclen)
 
@@ -216,7 +216,7 @@ def write_one_mfc(filename, numpy_matrix):
 
 def read_one_mfc(filename, startframe=0, endframe=0):
     # """ read one mfcc file using htkmfc.py"""        
-    mfc = hopen(filename)  # <htkmfc.HTKFeat_read object at 0x6ffffae1e90>  XXX\chunk\archive.0
+    mfc = hopen(filename)  # <htkmfc.HTKFeat_read object at 0x6ffffae1e90>  \\fbl\NAS\INVES\ruizhao\DNN\sequential\smdr3train\chunk\archive.0
     if (startframe == endframe == 0):
         obs = mfc.getall()  # or getchunk(startframe, endframe)  or getall()
     elif (endframe >= startframe):
