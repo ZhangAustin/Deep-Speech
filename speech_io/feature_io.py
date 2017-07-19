@@ -9,6 +9,9 @@ OBS = readscp(r'\\vilfblgpu020\D\users\zhashi\BNFeat\scps\BNDNN_BN_1300hr.mfc.he
 
 Author:         zhashi@microsoft.com
 Last update:    2015/12
+
+Bug fixed: self.filesize --> self.nsamples in the HTK header
+
 """
 
 from struct import unpack, pack
@@ -155,7 +158,7 @@ class HTKFeat_write(object):
         self.sampSize = veclen * 4
         self.paramKind = paramKind
         self.dtype = 'f'
-        self.filesize = 0
+        self.nsamples = 0
         self.swap = (unpack('=i', pack('>i', 42))[0] != 42)
         if (filename != None):
             self.open(filename)
@@ -173,7 +176,7 @@ class HTKFeat_write(object):
 
     def writeheader(self):
         self.fh.seek(0, 0)
-        self.fh.write(pack(">IIHH", self.filesize,
+        self.fh.write(pack(">IIHH", self.nsamples,
                            self.sampPeriod,
                            self.sampSize,
                            self.paramKind))
@@ -185,7 +188,7 @@ class HTKFeat_write(object):
             numpy.array(vec, self.dtype).byteswap().tofile(self.fh)
         else:
             numpy.array(vec, self.dtype).tofile(self.fh)
-        self.filesize = self.filesize + self.veclen
+        self.nsamples = self.nsamples + 1 #self.veclen
 
     def writeall(self, arr):
         # fix a spical case that arr only has 1 frame
